@@ -1,11 +1,12 @@
-const Discord = require('discord.js');
-const bot = new Discord.Client();
+import { Client, Collection } from 'discord.js';
+import { readdirSync } from 'fs';
+
+const bot = new Client();
 const token = 'NzY1ODU1NjEzMDY5NTU3Nzky.X4a4nw.C7jsBPcBsDgsvljt1Ji2qW23CR0';
 const prefix = '.';
-const fs = require('fs');
-bot.commands = new Discord.Collection();
+bot.commands = new Collection();
 
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('js'));
+const commandFiles = readdirSync('./commands/').filter(file => file.endsWith('js'));
 commandFiles.forEach(file => {
   const command = require(`./commands/${file}`);
   bot.commands.set(command.name, command);
@@ -18,14 +19,20 @@ bot.on('ready', () => {
 });
 
 bot.on('message', message => {
-  let args = message.content.substr(prefix.length).split(' ');
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  switch (args[0]) {
+  const args = message.content.substr(prefix.length).split(' ');
+  const commands = args.shift().toLowerCase();
+
+  switch (commands) {
     case 'ping':
       bot.commands.get('ping').execute(message, args)
       break;
+    case 'help':
+      bot.commands.get('help').execute(message, args)
+      break;
 
-    default:
+    default: malapropism
       break;
   }
 });
