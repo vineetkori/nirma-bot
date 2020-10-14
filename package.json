@@ -1,0 +1,25 @@
+{
+  "name": "nirma",
+  "version": "1.0.0",
+  "description": "A playlist bot for Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vineetkori/nirma-bot.git"
+  },
+  "keywords": [
+    "Discord",
+    "bot",
+    "music",
+    "playlist"
+  ],
+  "author": "Vineet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vineetkori/nirma-bot/issues"
+  },
+  "homepage": "https://github.com/vineetkori/nirma-bot#readme"
+}
