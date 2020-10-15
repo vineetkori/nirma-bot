@@ -15,7 +15,7 @@ module.exports = {
         }
         ],
         footer: {
-          text: "Contact DarkPandemonium#5125 if you're facing issues"
+          text: "Contact @DarkPandemonium#5125 if you're facing issues"
         }
       }
     });
