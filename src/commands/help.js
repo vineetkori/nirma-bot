@@ -3,7 +3,7 @@
 module.exports = {
   name: 'help',
   description: 'Helper Embed',
-  execute(message, args) {
+  async execute(message, args) {
     message.author.send({
       embed: {
         color: 0xFF033E,
