@@ -11,7 +11,7 @@ module.exports = {
         description: "Use . before commands. Happy listening!",
         fields: [{
           name: "sleep",
-          value: "Moves you the afk channel after 15m so you can sleep in peace. Use '.sleep x' to set x minutes till you're afk'd. Eg .sleep 25"
+          value: "Moves you the afk channel after 15m so you can sleep in peace. Use '.sleep x' to set x minutes till you're afk'd. Eg .sleep 25. You can cancel the timer by entering '.sleep c/cancel/clear'"
         }
         ],
         footer: {
