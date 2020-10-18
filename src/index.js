@@ -19,14 +19,17 @@ bot.on('message', (message) => {
     .substr(config.DISCORD_BOT.PREFIX.length)
     .split(/\s+/);
 
-  if (!bot.commands.get(command)) return message.channel.send('Sorry, Nirma don\'t get');
+  if (!bot.commands.get(command)) return;
 
   switch (command) {
     case 'help':
-      bot.commands.get('help').execute(message, args)
+      bot.commands.get('help').execute(message, args);
       break;
     case 'ping':
-      bot.commands.get('ping').execute(message, args)
+      bot.commands.get('ping').execute(message, args);
+      break;
+    case 'sleep':
+      bot.commands.get('sleep').execute(message, args);
       break;
 
     default:
