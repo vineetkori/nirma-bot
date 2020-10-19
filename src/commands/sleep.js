@@ -76,7 +76,7 @@ module.exports = {
           console.log(`${member.user.username} was moved to the afk channel!`);
         }, timeout);
 
-        sleepers.set(member.id, { timer: timer });
+        sleepers.set(member.id, timer);
 
       } else {
         message.channel.send('Sorry fam, I was unable to do that :open_mouth:');
