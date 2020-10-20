@@ -19,25 +19,29 @@ module.exports = {
     const timeout = getTimeout(args);
 
     if (member) {
-      // if timer already set
-      if (sleepers.has(member.id)) {
-
-        // if explicit cancel cmd, cancel current timer and return
-        if (clearCmds.findIndex(cmd => cmd === args[0]) > -1) {
-          message.reply('I see you changed your mind :eyes: Okay! Welcome back to sed reality.');
-
-          clearTimeout(sleepers.get(member.id).timer);
-          console.log('Timer cleared');
-
-          sleepers.delete(member.id);
-          console.log(`${member.user.tag} cancelled their timer`);
+      // if explicit cancel command
+      if (clearCmds.findIndex(cmd => cmd === args[0]) > -1) {
+        if (!sleepers.has(member.id)) {
+          message.reply('words of wisdom to heed - "You cannot stop what you did not start" :stars:');
           return;
         }
+        message.reply('I see you changed your mind :eyes: Okay! Welcome back to sed reality.');
 
+        const timer = sleepers.get(member.id);
+        clearTimeout(timer);
+
+        sleepers.delete(member.id);
+        console.log(`${member.user.tag} cancelled their timer`);
+        return;
+      }
+
+      // if timer already set
+      if (sleepers.has(member.id)) {
         // if new timeout, cancel current timer and add new
         if (typeof Number(args[0]) === 'number') {
-          console.log('Adding new timer');
-          clearTimeout(sleepers.get(member.id).timer);
+          console.log('Clearing old timer to be updated...');
+          const timer = sleepers.get(member.id);
+          clearTimeout(timer);
           sleepers.delete(member.id);
           // proceeds to 'if afkChannelId' to add new
         } else {
@@ -77,6 +81,7 @@ module.exports = {
         }, timeout);
 
         sleepers.set(member.id, timer);
+        console.log(`Timer set for ${member.user.username}`);
 
       } else {
         message.channel.send('Sorry fam, I was unable to do that :open_mouth:');
@@ -96,8 +101,8 @@ function getTimeout(args) {
   if (args[0]) {
     if (typeof Number(args[0]) === 'number') {
       if (args[0] > minTimeout && args[0] < maxTimeout) timeout = args[0];
-      if (args[0] < minTimeout) timeout = minTimeout;
-      if (args[0] > maxTimeout) timeout = maxTimeout;
+      if (args[0] <= minTimeout) timeout = minTimeout;
+      if (args[0] >= maxTimeout) timeout = maxTimeout;
     }
   }
 
