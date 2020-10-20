@@ -24,7 +24,7 @@ module.exports = {
 
         // if explicit cancel cmd, cancel current timer and return
         if (clearCmds.findIndex(cmd => cmd === args[0]) > -1) {
-          message.reply('I see you changed your mind :eyes:');
+          message.reply('I see you changed your mind :eyes: Okay! Welcome back to sed reality.');
 
           clearTimeout(sleepers.get(member.id).timer);
           console.log('Timer cleared');
