@@ -68,6 +68,11 @@ module.exports = {
         message.reply(`night, night! :bridge_at_night: Heading to dreamland in T - ${timeout / msCoversion} minutes :rocket:`);
 
         const timer = setTimeout(() => {
+          // if user left a vc after setting a timer
+          if (!member.voice.channelID) {
+            console.log(`${member.user.tag} left a voice chat before their timer could run out.`);
+            return;
+          }
           member.voice
             .setChannel(afkChannelId)
             .then(() => {
@@ -78,6 +83,7 @@ module.exports = {
               console.log(err);
             });
           console.log(`${member.user.username} was moved to the afk channel!`);
+          // TODO maybe remove map entry?
         }, timeout);
 
         sleepers.set(member.id, timer);
