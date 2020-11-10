@@ -1,4 +1,4 @@
-const config = require('./../../config/config.json');
+const config = require('../../config/config.json');
 
 let sleepers = new Map();
 const msCoversion = 60000; // milliseconds
@@ -8,11 +8,12 @@ const maxTimeout = 90; // minutes
 const clearCmds = ['c', 'can', 'cancel', 'clear', 'abort'];
 
 module.exports = {
-  name: 'sleep',
-  description: 'Disconnects a user from a voice channel after a specified time or 15m by default.',
+  name: 'afk',
+  description: 'Moves user to an afk channel after a specified time or 15m by default.',
   async execute(message, args) {
 
     const member = message.guild.member(message.member.user.id);
+    const afkChannelId = config.DISCORD_BOT.AFK_CHANNEL_ID;
     const timeout = getTimeout(args);
 
     if (member) {
@@ -40,43 +41,56 @@ module.exports = {
           const timer = sleepers.get(member.id);
           clearTimeout(timer);
           sleepers.delete(member.id);
-          // proceeds to 'if not in a vc' to add new entry
+          // proceeds to 'if afkChannelId' to add new
         } else {
           // garbage command
           return;
         }
       }
 
-      // If they are not in a vc
-      if (!member.voice.channelID) {
-        message.reply('you are not connected to a voice chat :upside_down:');
-        console.log(`${member.user.tag} not connected to a voice chat.`);
-        return;
-      }
-
-      message.reply(`night, night! :bridge_at_night: Heading to dreamland in T - ${timeout / msCoversion} minutes :rocket:`);
-
-      const timer = setTimeout(() => {
-        // if user left a vc after setting a timer
+      if (afkChannelId) {
+        // If they are not in a vc
         if (!member.voice.channelID) {
-          console.log(`${member.user.tag} left a voice chat before their timer could run out.`);
+          message.reply('you are not connected to a voice chat :upside_down:');
+          console.log(`${member.user.tag} not connected to a voice chat.`);
           return;
         }
-        member.voice
-          .kick()
-          .then(() => {
-            member.nickname ? message.channel.send(`${member.nickname} is now asleep :zzz:`) : message.channel.send(`${member.user.username} is now asleep :zzz:`);
-          })
-          .catch(err => {
-            message.reply('sorry, I was unable to put you to sleep. You on your own fam :upside_down:');
-            console.log(err);
-          });
-        console.log(`${member.user.username} was dc'ed!`);
-        // TODO maybe remove map entry?
-      }, timeout);
 
-      sleepers.set(member.id, timer);
-      console.log(`Timer set for ${member.user.username}`);
+        // If they are already in the afk vc
+        if (member.voice.channelID === afkChannelId) {
+          message.reply('stop texting while sleeping, boo :eyes:');
+          console.log(`${member.user.tag} already in afk vc.`);
+          return;
+        }
+
+        message.reply(`night, night! :bridge_at_night: Heading to dreamland in T - ${timeout / msCoversion} minutes :rocket:`);
+
+        const timer = setTimeout(() => {
+          // if user left a vc after setting a timer
+          if (!member.voice.channelID) {
+            console.log(`${member.user.tag} left a voice chat before their timer could run out.`);
+            return;
+          }
+          member.voice
+            .setChannel(afkChannelId)
+            .then(() => {
+              member.nickname ? message.channel.send(`${member.nickname} is now asleep :zzz:`) : message.channel.send(`${member.user.username} is now asleep :zzz:`);
+            })
+            .catch(err => {
+              message.reply('sorry, I was unable to put you to sleep. You on your own fam :upside_down:');
+              console.log(err);
+            });
+          console.log(`${member.user.username} was moved to the afk channel!`);
+          // TODO maybe remove map entry?
+        }, timeout);
+
+        sleepers.set(member.id, timer);
+        console.log(`Timer set for ${member.user.username}`);
+
+      } else {
+        message.channel.send('Sorry fam, I was unable to do that :open_mouth:');
+        console.log('Afk channel does not exist');
+      }
 
     } else {
       message.channel.send('Sorry fam, I was unable to do that :anguished:');

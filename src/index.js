@@ -31,6 +31,9 @@ bot.on('message', (message) => {
     case 'sleep':
       bot.commands.get('sleep').execute(message, args);
       break;
+    case 'afk':
+      bot.commands.get('afk').execute(message, args);
+      break;
 
     default:
       break;
